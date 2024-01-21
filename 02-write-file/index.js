@@ -10,17 +10,15 @@ const stream = fs.createWriteStream(correctPath, "utf-8");
 const greeting = "Hello. What do you wish to write?..\n";
 const farewell = "Quite. It is enough.";
 
-
 rl.setPrompt(greeting);
 rl.prompt();
 rl.on('line', (text) => {
-    if(text === 'exit'){
+    if (text === 'exit')
         rl.close();
-    } else {
+    else
         stream.write(text + "\n");
-    }
 });
 
-rl.on('close', (text) => {
+rl.on('close', () => {
     console.log(farewell);
 });
