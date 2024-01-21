@@ -65,16 +65,16 @@ function createIndexHtml() {
             if (error) throw error;
             fs.readdir(correctPathFromHTML, { withFileTypes: true }, function (error, files) {
                 if (error) throw error;
-                files.forEach(function (file) {
-                    fs.readFile(path.resolve(correctPathFromHTML, file.name), 'utf8', function (error, dataFile) {
+                for (let i = 0; i < files.length; i++) {
+                    fs.readFile(path.resolve(correctPathFromHTML, files[i].name), 'utf8', function (error, dataFile) {
                         if (error) throw error;
-                        let tag = '{{' + path.basename(file.name, '.html') + '}}';
+                        let tag = '{{' + path.basename(files[i].name, '.html') + '}}';
                         data = data.replace(tag, dataFile);
                         fs.writeFile(correctHTMLTo, data, function (error) {
                             if (error) throw error;
                         });
                     });
-                });
+                }
             });
         });
     });
