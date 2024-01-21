@@ -1,22 +1,17 @@
 const fs = require('fs');
 const path = require('path');
-const correctPathFromCSS = path.resolve(__dirname, "styles");
-const correctPathFromHTML = path.resolve(__dirname, "components");
+
 const correctPathFromAssets = path.resolve(__dirname, "assets");
-
 const correctPathTo = path.resolve(__dirname, "project-dist");
-
-const correctHTMLFrom = path.resolve(__dirname, "template.html");
-const correctHTMLTo = path.resolve(__dirname, "project-dist", "index.html");
 const correctAssets = path.resolve(__dirname, "project-dist", "assets");
 
 fs.rm(correctPathTo, { recursive: true, force: true }, (err) => {
-    if (err) throw err;
+    if (err) throw err
     fs.mkdir(correctPathTo, { recursive: true }, (err) => {
         if (err) throw err;
 
         copyFilesAndCreateDirectory(correctPathFromAssets, correctAssets);
-        mergeStyle(correctPathFromCSS);
+        mergeStyle();
         createIndexHtml();
     });
 });
@@ -42,16 +37,17 @@ function copyFilesAndCreateDirectory(pathFrom, pathTo) {
     });
 }
 
-function mergeStyle(from) {
+function mergeStyle() {
+    const correctPathFromCSS = path.resolve(__dirname, "styles");
     const correctCSS = path.resolve(__dirname, "project-dist", "style.css");
     const streamCSS = fs.createWriteStream(correctCSS, "utf-8");
 
-    fs.readdir(from, { withFileTypes: true }, (err, files) => {
+    fs.readdir(correctPathFromCSS, { withFileTypes: true }, (err, files) => {
         if (err) throw err;
         files.forEach(file => {
             let extname = path.extname(file.name);
             if (file.isFile() && extname === ".css") {
-                let input = fs.createReadStream(path.resolve(from, file.name), "utf-8");
+                let input = fs.createReadStream(path.resolve(correctPathFromCSS, file.name), "utf-8");
                 input.pipe(streamCSS);
             }
         })
@@ -59,6 +55,10 @@ function mergeStyle(from) {
 }
 
 function createIndexHtml() {
+    const correctPathFromHTML = path.resolve(__dirname, "components");
+    const correctHTMLFrom = path.resolve(__dirname, "template.html");
+    const correctHTMLTo = path.resolve(__dirname, "project-dist", "index.html");
+
     fs.copyFile(correctHTMLFrom, correctHTMLTo, (err) => {
         if (err) throw err;
         fs.readFile(correctHTMLTo, 'utf8', function (error, data) {
