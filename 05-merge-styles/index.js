@@ -11,7 +11,6 @@ fs.readdir(correctPathFrom, { withFileTypes: true }, (err, files) => {
         files.forEach(file => {
             let extname = path.extname(file.name);
             if (file.isFile() && extname === ".css") {
-                console.log(file.name);
                 let input = fs.createReadStream(path.resolve(correctPathFrom, file.name), "utf-8");
                 input.pipe(streamWrite);
             }
