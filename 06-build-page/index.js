@@ -59,6 +59,7 @@ function mergeStyle() {
     })
 }
 
+
 function createIndexHtml() {
     const correctPathIndex = path.resolve(__dirname, "project-dist", "index.html");
     const stream = fs.createWriteStream(correctPathIndex, "utf-8");
@@ -70,7 +71,11 @@ function createIndexHtml() {
     initHtml.on("data", (chunk) => { changeHtml += chunk });
     initHtml.on("end", () => {
         let forChangeHtml = changeHtml;
-        const arrayModules = ['header', 'articles', 'footer'];
+
+        let regexp = /{{(.*?)}}/g;
+        let matchAll = forChangeHtml.matchAll(regexp);
+        const arrayModules = Array.from(matchAll).map((x) => x = x[1]);
+
         for (const nameTag of arrayModules) {
             let chunkModyleHtml = "";
             let getFullModule = fs.createReadStream(path.resolve(correctPathFromHTML, nameTag + '.html'), 'utf8');
@@ -80,7 +85,7 @@ function createIndexHtml() {
                 forChangeHtml = forChangeHtml.replace(tag, chunkModyleHtml);
                 const correctPath = path.resolve(__dirname, "text.txt");
                 const stream2 = fs.createWriteStream(correctPath, "utf-8");
-                if(arrayModules.length - 1 === arrayModules.lastIndexOf(nameTag)){
+                if (arrayModules.length - 1 === arrayModules.lastIndexOf(nameTag)) {
                     stream.write(forChangeHtml + "\n");
                 }
             })
