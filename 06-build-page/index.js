@@ -40,15 +40,16 @@ function copyFilesAndCreateDirectory(pathFrom, pathTo) {
 function mergeStyle() {
     const correctPathFromCSS = path.resolve(__dirname, "styles");
     const correctCSS = path.resolve(__dirname, "project-dist", "style.css");
-    const streamCSS = fs.createWriteStream(correctCSS, "utf-8");
+    const streamCSS = fs.createWriteStream(correctCSS);
 
     fs.readdir(correctPathFromCSS, { withFileTypes: true }, (err, files) => {
         if (err) throw err;
         files.forEach(file => {
             let extname = path.extname(file.name);
             if (file.isFile() && extname === ".css") {
-                let input = fs.createReadStream(path.resolve(correctPathFromCSS, file.name), "utf-8");
-                input.pipe(streamCSS);
+                fs.createReadStream(path.resolve(correctPathFromCSS, file.name)).on('data', dataChunkStyle => {
+                    streamCSS.write(dataChunkStyle);
+                });
             }
         })
     })
