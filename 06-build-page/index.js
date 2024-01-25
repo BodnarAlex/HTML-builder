@@ -82,7 +82,7 @@ function createIndexHtml() {
             getFullModule.on("data", (chunk) => { chunkModyleHtml += chunk });
             getFullModule.on("end", () => {
                 let tag = '{{' + nameTag + '}}';
-                forChangeHtml = forChangeHtml.replace(tag, chunkModyleHtml);
+                forChangeHtml = forChangeHtml.replaceAll(tag, chunkModyleHtml);
                 const correctPath = path.resolve(__dirname, "text.txt");
                 const stream2 = fs.createWriteStream(correctPath, "utf-8");
                 if (arrayModules.length - 1 === arrayModules.lastIndexOf(nameTag)) {
